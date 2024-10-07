@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api")
 public class ProductController {
     private final ProductService productService;
     private final UserService userService;
@@ -23,14 +23,14 @@ public class ProductController {
     }
 
     // handler to show all products
-    @GetMapping
+    @GetMapping("/public/products")
     public ResponseEntity<List<ProductDTO>> getAllProductsHandler() {
         List<ProductDTO> products = productService.getAllProducts();
         return new ResponseEntity<>(products,HttpStatus.OK);
     }
 
     // handler to get product by product id
-    @GetMapping("/{id}")
+    @GetMapping("/public/product/{id}")
     public ResponseEntity<ProductDTO> getProductByIdHandler(@PathVariable Long id, HttpServletRequest request) {
         ProductDTO productDTO = productService.getProductById(id);
         return new ResponseEntity<>(productDTO,HttpStatus.OK);
@@ -38,28 +38,24 @@ public class ProductController {
 
 
     // handler to add product by an admin
-    @PostMapping("/add")
+    @PostMapping("/admin/product/add")
     public ResponseEntity<ProductDTO> addProductHandler(@RequestBody Product product, @RequestHeader("Authorization") String authHeader){
-        if(userService.isAdmin()) {
             ProductDTO addedProduct = productService.addProduct(product,authHeader);
             return new ResponseEntity<>(addedProduct,HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     // handler to delete product by an admin
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/product/{id}")
     public ResponseEntity<String> deleteProductHandler(@PathVariable Long id) {
-        if(!userService.isAdmin()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         String result = productService.deleteProduct(id);
         return new ResponseEntity<>(result,HttpStatus.CREATED);
     }
 
     // handler to update a product by an admin
-    @PutMapping
-    public ResponseEntity<ProductDTO> updateProductHandler(@RequestBody Product product) {
-        if(!userService.isAdmin()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        ProductDTO result = productService.updateProduct(product);
+    @PutMapping("/admin/product")
+    public ResponseEntity<ProductDTO> updateProductHandler(@RequestBody Product product, @RequestHeader("Authorization") String authHeader) {
+        ProductDTO result = productService.updateProduct(product,authHeader);
+        System.out.println(result);
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 }

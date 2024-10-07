@@ -10,6 +10,7 @@ import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -68,10 +69,14 @@ public class ProductService {
         throw new ProductNotFoundException("can't find product with id = " + id);
     }
 
-    public ProductDTO updateProduct(Product product) throws ProductNotFoundException{
+    public ProductDTO updateProduct(Product product,String authHandler) throws ProductNotFoundException{
+        String token = authHandler.substring(7);
+        AppUser seller = userService.getCurrentLoggedInUser(token);
         Optional<Product> prod = productRepository.findById(product.getId());
         if(prod.isPresent()) {
-            return ProductMapper.toDto(productRepository.save(product));
+            product.setSeller(seller);
+             productRepository.save(product);
+            return ProductMapper.toDto(product);
         }
         throw  new ProductNotFoundException("product not found");
     }

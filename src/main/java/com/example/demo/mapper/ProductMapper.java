@@ -18,7 +18,7 @@ public class ProductMapper {
                 .description(product.getDescription())
                 .quantity(product.getQuantity())
                 .price(product.getPrice())
-                .sellerId(product.getSeller() != null ? product.getSeller().getId() : null) // Get seller ID if not null
+                .sellerId(product.getSeller().getId()) // Get seller ID if not null
                 .build();
     }
 

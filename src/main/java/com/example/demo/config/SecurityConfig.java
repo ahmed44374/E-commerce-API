@@ -1,5 +1,7 @@
-package com.example.demo.security;
+package com.example.demo.config;
 
+import com.example.demo.security.CustomUserDetailService;
+import com.example.demo.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,8 +40,11 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers(publicUrl).permitAll() // Public URLs are accessible to everyone
-                                .anyRequest().authenticated() // All other requests require authentication
+                                .requestMatchers(AppConstants.PUBLIC_URLS).permitAll()
+                                .requestMatchers(AppConstants.USER_URLS).hasAnyAuthority("USER","ADMIN")
+                                .requestMatchers(AppConstants.ADMIN_URLS).hasAuthority("ADMIN")
+                                .anyRequest()
+                                .authenticated() // All other requests require authentication
                 )
                 .csrf(csrf -> csrf.disable())// Disable CSRF for stateless API
                 .sessionManagement(session -> session
