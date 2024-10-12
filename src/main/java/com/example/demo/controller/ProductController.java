@@ -55,7 +55,6 @@ public class ProductController {
     @PutMapping("/admin/product")
     public ResponseEntity<ProductDTO> updateProductHandler(@RequestBody Product product, @RequestHeader("Authorization") String authHeader) {
         ProductDTO result = productService.updateProduct(product,authHeader);
-        System.out.println(result);
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 }

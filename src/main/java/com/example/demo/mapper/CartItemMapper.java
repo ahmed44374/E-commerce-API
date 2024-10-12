@@ -2,12 +2,25 @@ package com.example.demo.mapper;
 
 import com.example.demo.dto.CartItemDTO;
 import com.example.demo.entity.CartItem;
-import org.mapstruct.Mapper;
+import com.example.demo.entity.Product;
 
-@Mapper(componentModel = "spring")
-public interface CartItemMapper {
+public class CartItemMapper {
 
-    CartItemDTO cartItemToCartItemDTO(CartItem cartItem);
+    // تحويل من DTO إلى Entity
+    public static CartItem toEntity(CartItemDTO cartItemDTO, Product product) {
+        return CartItem.builder()
+                .id(cartItemDTO.getId())
+                .quantity(cartItemDTO.getQuantity())
+                .product(product)
+                .build();
+    }
 
-    CartItem cartItemDTOToCartItem(CartItemDTO cartItemDTO);
+
+    public static CartItemDTO toDTO(CartItem cartItem) {
+        CartItemDTO cartItemDTO = new CartItemDTO();
+        cartItemDTO.setId(cartItem.getId());
+        cartItemDTO.setProductId(cartItem.getProduct().getId());
+        cartItemDTO.setQuantity(cartItem.getQuantity());
+        return cartItemDTO;
+    }
 }
