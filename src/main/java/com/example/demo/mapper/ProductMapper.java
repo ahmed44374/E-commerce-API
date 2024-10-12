@@ -37,7 +37,7 @@ public class ProductMapper {
 
         // Assuming you have a way to fetch the AppUser by ID, you can create a new AppUser entity here if needed
         if (productDTO.getSellerId() != null) {
-            AppUser seller = new AppUser();
+            AppUser seller = new AppUser(); // 
             seller.setId(productDTO.getSellerId());
             product.setSeller(seller);
         }
